@@ -106,4 +106,53 @@ function draw(id,c){
     const upper=((i+ri)%2===0);
     const tx=center+(i===0?-18:i===6?24:0);
     const barEdgeY=upper?y:y+barH;
-    const lineBendY=upper?y-30:y+
+    const lineBendY=upper?y-30:y+barH+30;
+    const textY=upper?lineBendY-12:lineBendY+24;
+    svg.append(el('path',{d:`M ${center} ${barEdgeY} L ${center} ${lineBendY} L ${tx} ${lineBendY}`,class:'leader'}));
+    svg.append(el('text',{x:tx,y:textY,'text-anchor':'middle',class:'outside'},label));
+   }
+   cursor+=rw;
+  });
+ });
+ svg.append(el('text',{x:left+w/2,y:398,'text-anchor':'middle',class:'axis-title'},c.title));
+}
+
+function highlight(svg,activeRect){
+ svg.querySelectorAll('rect.seg').forEach(r=>{
+  if(r===activeRect){r.style.opacity='1';r.style.stroke='#20303d';r.style.strokeWidth='2';}
+  else{r.style.opacity='0.35';r.style.stroke='none';}
+ });
+}
+function unhighlight(svg){
+ svg.querySelectorAll('rect.seg').forEach(r=>{r.style.opacity='1';r.style.stroke='none';});
+}
+
+draw('tonnage',charts.tonnage);
+draw('value',charts.value);
+
+const legend=document.getElementById('legend');
+series.forEach(s=>{
+ const item=document.createElement('div');
+ item.className='legend-item';
+ item.tabIndex=0;
+ const sw=document.createElement('span');sw.className='swatch';sw.style.background=s.color;
+ const label=document.createElement('span');label.innerHTML=s.label.replace('\n','<br>');
+ item.append(sw,label);
+ const setActive=on=>{
+  document.querySelectorAll('svg').forEach(svg=>{
+   svg.querySelectorAll('rect.seg').forEach(r=>{
+    if(r.getAttribute('fill')===s.color){r.style.opacity='1';r.style.stroke='#20303d';r.style.strokeWidth='2';}
+    else if(on){r.style.opacity='0.35';r.style.stroke='none';}
+    else{r.style.opacity='1';r.style.stroke='none';}
+   });
+  });
+  item.classList.toggle('active',on);
+ };
+ item.addEventListener('mouseenter',()=>setActive(true));
+ item.addEventListener('mouseleave',()=>setActive(false));
+ item.addEventListener('focus',()=>setActive(true));
+ item.addEventListener('blur',()=>setActive(false));
+ legend.append(item);
+});
+</script>
+</body></html>
