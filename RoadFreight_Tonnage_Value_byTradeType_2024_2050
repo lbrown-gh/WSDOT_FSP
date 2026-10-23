@@ -7,10 +7,8 @@
 <style>
 :root{--text:#545454;--grid:#e7e7e7;--leader:#999}
 *{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:var(--text);
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.figure{max-width:1420px;width:100%;margin:0 auto;padding:26px 28px 18px;position:relative}
+body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+.figure{max-width:1420px;margin:0 auto;padding:26px 28px 18px;position:relative}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:55px}
 .chart{min-width:0}
 .chart svg{width:100%;height:auto;overflow:visible}
@@ -57,7 +55,7 @@ const series=[
  {key:'Exports - Thru WA',label:'Exports -\nThru WA',color:'#05aeb7'},
  {key:'Domestic - Within WA',label:'Domestic -\nWithin WA',color:'#005b58'},
  {key:'Domestic - to WA',label:'Domestic -\nto WA',color:'#008363'},
- {key:'Domestic - From WA',label:'Domestic -\nFrom WA',color:'#8cdb00'}
+ {key:'Domestic - From WA',label:'Domestic –\nFrom WA',color:'#8cdb00'}
 ];
 const charts={
  tonnage:{max:500,step:100,title:'Million Tons', divisor:1000, unit:'M tons', rows:{
@@ -91,7 +89,7 @@ function draw(id,c){
   series.forEach((s,i)=>{
    const valRaw=row[s.key], val=valRaw/c.divisor, rw=val/c.max*w, center=cursor+rw/2;
    const rect=el('rect',{x:cursor,y,width:rw,height:barH,fill:s.color,class:'seg',tabindex:'0',role:'img','aria-label':`${s.label.replace('\n',' ')}, ${year}: ${pct(valRaw,total)} of total, ${val.toFixed(1)} ${c.unit}`});
-   const tipHtml=()=>`<b>${s.label.replace('\n',' ')} \u2014 ${year}</b>${val.toLocaleString(undefined,{maximumFractionDigits:1})} ${c.unit} (${pct(valRaw,total)} of total)`;
+   const tipHtml=()=>`<b>${s.label.replace('\n',' ')} — ${year}</b>${val.toLocaleString(undefined,{maximumFractionDigits:1})} ${c.unit} (${pct(valRaw,total)} of total)`;
    rect.addEventListener('mouseenter',e=>{highlight(svg,rect);showTip(e,tipHtml())});
    rect.addEventListener('mousemove',moveTip);
    rect.addEventListener('mouseleave',()=>{unhighlight(svg);hideTip()});
@@ -155,5 +153,4 @@ series.forEach(s=>{
  legend.append(item);
 });
 </script>
-</body>
-</html>
+</body></html>
