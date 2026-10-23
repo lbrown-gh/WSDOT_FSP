@@ -7,10 +7,10 @@
 <style>
 :root{--text:#545454;--grid:#e7e7e7;--leader:#999}
 *{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:var(--text);
+html,body{height:100%;margin:0}
+body{background:#fff;font-family:Arial,Helvetica,sans-serif;color:var(--text);
   min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.figure{max-width:1420px;width:100%;margin:0 auto;padding:26px 28px 18px;position:relative}
+.figure{max-width:1420px;width:100%;margin:auto;padding:26px 28px 18px;position:relative}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:55px}
 .chart{min-width:0}
 .chart svg{width:100%;height:auto;overflow:visible}
@@ -61,8 +61,8 @@ const series=[
 ];
 const charts={
  tonnage:{max:500,step:100,title:'Million Tons', divisor:1000, unit:'M tons', rows:{
-  '2024':{'Imports':12801.74,'Imports - Thru WA':4526.31,'Exports':17729.26,'Exports - Thru WA':5939.99,'Domestic - Within WA':239261.50,'Domestic - to WA':34695.18,'Domestic - From WA':26565.60},
-  '2050':{'Imports':24439.01,'Imports - Thru WA':5994.75,'Exports':41449.00,'Exports - Thru WA':12585.52,'Domestic - Within WA':346228.22,'Domestic - to WA':57128.50,'Domestic - From WA':47934.73}
+  '2024':{'Imports':12801.74,'Imports - Thru WA':4526.31,'Exports':17729.26,'Exports - Thru WA':5939.99,'Domestic - Within WA':346228.22,'Domestic - to WA':34695.18,'Domestic - From WA':26565.60},
+  '2050':{'Imports':24439.01,'Imports - Thru WA':5994.75,'Exports':41449.00,'Exports - Thru WA':12585.52,'Domestic - Within WA':239261.50,'Domestic - to WA':57128.50,'Domestic - From WA':47934.73}
  }},
  value:{max:800,step:200,title:'Billion Dollars (2017 Value)',divisor:1000,unit:'B $ (2017)',rows:{
   '2024':{'Imports':30247.07,'Imports - Thru WA':14896.83,'Exports':28402.07,'Exports - Thru WA':17654.33,'Domestic - Within WA':136503.21,'Domestic - to WA':84869.22,'Domestic - From WA':59714.19},
@@ -78,7 +78,7 @@ function moveTip(evt){tooltip.style.left=evt.clientX+'px';tooltip.style.top=evt.
 function hideTip(){tooltip.classList.remove('show')}
 
 function draw(id,c){
- const svg=document.getElementById(id), left=76,right=25,top=70,bottom=330,w=650-left-right, barH=58, ys=[102,240];
+ const svg=document.getElementById(id), left=76,right=25,top=70,bottom=330,w=650-left-right, barH=58, ys=[94,264];
  for(let t=0;t<=c.max;t+=c.step){let x=left+t/c.max*w;svg.append(el('line',{x1:x,y1:top,x2:x,y2:bottom,class:'grid'}));svg.append(el('text',{x,y:360,'text-anchor':'middle',class:'tick'},String(t)))}
  svg.append(el('line',{x1:left,y1:top,x2:left,y2:bottom,class:'axis'}));
  svg.append(el('line',{x1:left,y1:bottom,x2:left+w,y2:bottom,class:'axis'}));
@@ -91,7 +91,7 @@ function draw(id,c){
   series.forEach((s,i)=>{
    const valRaw=row[s.key], val=valRaw/c.divisor, rw=val/c.max*w, center=cursor+rw/2;
    const rect=el('rect',{x:cursor,y,width:rw,height:barH,fill:s.color,class:'seg',tabindex:'0',role:'img','aria-label':`${s.label.replace('\n',' ')}, ${year}: ${pct(valRaw,total)} of total, ${val.toFixed(1)} ${c.unit}`});
-   const tipHtml=()=>`<b>${s.label.replace('\n',' ')} \u2014 ${year}</b>${val.toLocaleString(undefined,{maximumFractionDigits:1})} ${c.unit} (${pct(valRaw,total)} of total)`;
+   const tipHtml=()=>`<b>${s.label.replace('\n',' ')} — ${year}</b>${val.toLocaleString(undefined,{maximumFractionDigits:1})} ${c.unit} (${pct(valRaw,total)} of total)`;
    rect.addEventListener('mouseenter',e=>{highlight(svg,rect);showTip(e,tipHtml())});
    rect.addEventListener('mousemove',moveTip);
    rect.addEventListener('mouseleave',()=>{unhighlight(svg);hideTip()});
@@ -103,11 +103,12 @@ function draw(id,c){
    if(enough){
     svg.append(el('text',{x:center,y:y+37,'text-anchor':'middle',class:'inside'+(i===2||i===6?' dark':'')},label));
    }else{
-    const upper=((i+ri)%2===0);
-    const tx=center+(i===0?-18:i===6?24:0);
+    const upperMap=[true,true,false,false,true,false,true];
+    const upper=upperMap[i];
+    const tx=center+(i===0?-18:i===6?24:i===2?-12:i===3?12:0);
     const barEdgeY=upper?y:y+barH;
-    const lineBendY=upper?y-30:y+barH+30;
-    const textY=upper?lineBendY-12:lineBendY+24;
+    const lineBendY=upper?y-24:y+barH+24;
+    const textY=upper?lineBendY-10:lineBendY+18;
     svg.append(el('path',{d:`M ${center} ${barEdgeY} L ${center} ${lineBendY} L ${tx} ${lineBendY}`,class:'leader'}));
     svg.append(el('text',{x:tx,y:textY,'text-anchor':'middle',class:'outside'},label));
    }
