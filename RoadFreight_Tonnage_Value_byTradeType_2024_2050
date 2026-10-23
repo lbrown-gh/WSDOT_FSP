@@ -57,7 +57,7 @@ const series=[
  {key:'Exports - Thru WA',label:'Exports -\nThru WA',color:'#05aeb7'},
  {key:'Domestic - Within WA',label:'Domestic -\nWithin WA',color:'#005b58'},
  {key:'Domestic - to WA',label:'Domestic -\nto WA',color:'#008363'},
- {key:'Domestic - From WA',label:'Domestic –\nFrom WA',color:'#8cdb00'}
+ {key:'Domestic - From WA',label:'Domestic -\nFrom WA',color:'#8cdb00'}
 ];
 const charts={
  tonnage:{max:500,step:100,title:'Million Tons', divisor:1000, unit:'M tons', rows:{
@@ -91,7 +91,7 @@ function draw(id,c){
   series.forEach((s,i)=>{
    const valRaw=row[s.key], val=valRaw/c.divisor, rw=val/c.max*w, center=cursor+rw/2;
    const rect=el('rect',{x:cursor,y,width:rw,height:barH,fill:s.color,class:'seg',tabindex:'0',role:'img','aria-label':`${s.label.replace('\n',' ')}, ${year}: ${pct(valRaw,total)} of total, ${val.toFixed(1)} ${c.unit}`});
-   const tipHtml=()=>`<b>${s.label.replace('\n',' ')} — ${year}</b>${val.toLocaleString(undefined,{maximumFractionDigits:1})} ${c.unit} (${pct(valRaw,total)} of total)`;
+   const tipHtml=()=>`<b>${s.label.replace('\n',' ')} \u2014 ${year}</b>${val.toLocaleString(undefined,{maximumFractionDigits:1})} ${c.unit} (${pct(valRaw,total)} of total)`;
    rect.addEventListener('mouseenter',e=>{highlight(svg,rect);showTip(e,tipHtml())});
    rect.addEventListener('mousemove',moveTip);
    rect.addEventListener('mouseleave',()=>{unhighlight(svg);hideTip()});
@@ -155,4 +155,5 @@ series.forEach(s=>{
  legend.append(item);
 });
 </script>
-</body></html>
+</body>
+</html>
